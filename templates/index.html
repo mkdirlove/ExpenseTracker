@@ -1,89 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-<br>
-<div class="box has-background-dark">
-    <span id="welcome-message"></span>
-</div>
-
-<!-- Header Section with Title -->
-<div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
-    <h2 class="title is-4">Expenses</h2>
-</div>
-
-<div class="table-container">
-    <table id="expensesTable" class="table is-fullwidth is-narrow is-bordered">
-        <thead>
-            <tr>
-                <th class="is-link">Title</th>
-                <th class="is-link">Amount</th>
-                <th class="is-link">Category</th>
-                <th class="is-link">Date</th>
-                <th class="is-link">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for expense in expenses %}
-            <tr>
-                <td>{{ expense[1] }}</td>
-                <td>₱{{ expense[2] }}</td>
-                <td>{{ expense[3] }}</td>
-                <td>{{ expense[4] }}</td>
-                <td>
-                    <div class="buttons">
-                        <a href="{{ url_for('edit_expense', expense_id=expense[0]) }}" class="button is-small is-warning">Edit</a>
-                        <form action="{{ url_for('delete_expense', expense_id=expense[0]) }}" method="POST" style="display:inline;">
-                            <button type="submit" class="button is-small is-danger">Delete</button>
-                        </form>
+<section class="section" id="carousel-section">
+    <div class="container">
+        <div id="carousel-demo" class="carousel pb-6 pt-6" style="overflow: hidden">
+            <div class="item-1">
+                <div class="columns is-vcentered pt-6"> <!-- Vertical centering applied here -->
+                    <div class="column is-full-mobile is-half-tablet is-half-desktop pt-6">
+                        <h2 class="title is-2 has-text-weight-bold">Take Control of Your Finances!</h2>
+                        <p class="is-size-5">
+                            Managing your expenses has never been easier! Our platform provides you with a comprehensive suite of tools designed to help you track, analyze, and optimize your spending. Whether you're a small business owner or an individual looking to budget smarter, our user-friendly interface empowers you to make informed financial decisions. Say goodbye to financial stress and hello to clarity and confidence in your financial journey!
+                        </p>
+                        <br>
+                        <div class="buttons is-left">
+                            <a href="{{ url_for('register') }}" class="button is-medium is-primary">Get Started</a>
+                        </div>
                     </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+                    <div class="column is-full-mobile is-half-tablet is-half-desktop">
+                        <figure class="image is-4by3">
+                            <img src="https://plus.unsplash.com/premium_photo-1680721442350-6f91fbe7df3f" alt="Slide Image" class="is-rounded" />
+                        </figure>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-<!-- Include DataTables CSS and JS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-
-<script>
-    // Initialize DataTables with vertical scroll
-    $(document).ready(function() {
-        $('#expensesTable').DataTable({
-            scrollY: '520px',  // Set vertical scroll height
-            scrollCollapse: true,  // Allow the table to reduce height when less data is present
-            paging: true  // Disable pagination
-        });
-    });
-
-    // Array of random welcome messages
-    const messages = [
-        "Welcome, {{ current_user.username }}! 😉",
-        "Hello, {{ current_user.username }}! Glad to see you here! 😊",
-        "Hi, {{ current_user.username }}! Hope you're having a great day! 🌟",
-        "Welcome back, {{ current_user.username }}! Let's get started! 🚀",
-        "Greetings, {{ current_user.username }}! Ready to explore? 🎉",
-        "Hey there, {{ current_user.username }}! Let's make today amazing! 💪",
-        "Welcome aboard, {{ current_user.username }}! We're excited to have you! 🎊",
-        "Good to see you, {{ current_user.username }}! Let's dive into the fun! 🔍",
-        "What's up, {{ current_user.username }}? Ready for some adventures? 🗺️",
-        "Hi, {{ current_user.username }}! Your journey starts now! 🌈",
-        "Welcome, {{ current_user.username }}! Let's achieve great things together! 🏆",
-        "Hey, {{ current_user.username }}! Your presence makes this place brighter! ☀️",
-        "Welcome back, {{ current_user.username }}! Your next challenge awaits! ⚡",
-        "Hello, {{ current_user.username }}! Let’s conquer today together! 🏅",
-        "Welcome, {{ current_user.username }}! Every day is a new opportunity! 🌟"
-    ];
-
-    // Function to select a random message
-    function getRandomMessage() {
-        const randomIndex = Math.floor(Math.random() * messages.length);
-        return messages[randomIndex];
-    }
-
-    // Set the random message to the span element
-    document.getElementById("welcome-message").textContent = getRandomMessage();
-</script>
 {% endblock %}
