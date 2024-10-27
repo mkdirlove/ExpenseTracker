@@ -11,6 +11,29 @@
     </div>
 </div>
 
+<!-- Chart Container -->
+<div class="columns is-multiline mt-5">
+    <div class="column is-6">
+        <div class="card has-background-dark">
+            <header class="card-header">
+                <p class="card-header-title has-text-centered">Expenses Overview</p>
+            </header>
+            <div class="card-content chart-container">
+                <canvas id="expensesChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="column is-6">
+        <div class="card has-background-dark">
+            <header class="card-header">
+                <p class="card-header-title has-text-centered">Category-wise Expenses</p>
+            </header>
+            <div class="card-content chart-container">
+                <canvas id="categoryExpensesChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="columns is-multiline">
     {% for title, tableId, data in [
@@ -54,6 +77,9 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
 
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
     .analytics-container {
         margin-bottom: 20px;
@@ -79,6 +105,22 @@
     table.dataTable {
         margin: 0; /* Remove margin for a better layout */
     }
+
+    .chart-container {
+        display: flex; /* Use flexbox for centering */
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        position: relative; /* Positioning context for the canvas */
+        height: 400px; /* Adjust the height here */
+        width: 100%; /* Make the chart responsive */
+    }
+
+    /* Ensure the canvas scales properly */
+    canvas {
+        max-width: 100%; /* Prevents overflow */
+        max-height: 100%; /* Prevents overflow */
+        height: auto; /* Maintain aspect ratio */
+    }
 </style>
 
 <script>
@@ -93,6 +135,108 @@
                 info: false // Disable the info display
             });
         });
+
+        // Prepare data for the line chart
+        const dailyLabels = {{ daily_expenses|map(attribute=0)|list|tojson|safe }};
+        const dailyData = {{ daily_expenses|map(attribute=1)|list|tojson|safe }};
+
+        const monthlyLabels = {{ monthly_expenses|map(attribute=0)|list|tojson|safe }};
+        const monthlyData = {{ monthly_expenses|map(attribute=1)|list|tojson|safe }};
+
+        const yearlyLabels = {{ yearly_expenses|map(attribute=0)|list|tojson|safe }};
+        const yearlyData = {{ yearly_expenses|map(attribute=1)|list|tojson|safe }};
+
+        const data = {
+            labels: dailyLabels,
+            datasets: [{
+                label: 'Daily Expenses',
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1,
+                data: dailyData,
+            }, {
+                label: 'Monthly Expenses',
+                backgroundColor: 'rgba(255, 206, 86, 0.5)',
+                borderColor: 'rgba(255, 206, 86, 1)',
+                borderWidth: 1,
+                data: monthlyData,
+                fill: false,
+            }, {
+                label: 'Yearly Expenses',
+                backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1,
+                data: yearlyData,
+                fill: false,
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Allow height to adjust
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount (₱)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    }
+                }
+            }
+        };
+
+        // Render the line chart
+        const expensesChart = new Chart(
+            document.getElementById('expensesChart'),
+            config
+        );
+
+        // Prepare data for the pie chart
+        const categoriesLabels = {{ categories|map(attribute=0)|list|tojson|safe }};
+        const categoriesData = {{ categories|map(attribute=1)|list|tojson|safe }};
+
+        const pieData = {
+            labels: categoriesLabels,
+            datasets: [{
+                label: 'Category-wise Expenses',
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(153, 102, 255, 0.5)',
+                    'rgba(255, 159, 64, 0.5)'
+                ],
+                borderColor: 'rgba(0, 0, 0, 1)',
+                borderWidth: 1,
+                data: categoriesData
+            }]
+        };
+
+        const pieConfig = {
+            type: 'pie',
+            data: pieData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Allow height to adjust
+            }
+        };
+
+        // Render the pie chart
+        const categoryExpensesChart = new Chart(
+            document.getElementById('categoryExpensesChart'),
+            pieConfig
+        );
     });
 </script>
 {% endblock %}
