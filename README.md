@@ -1,7 +1,7 @@
 <h1 align="center">
   <br>
   <a href="https://github.com/mkdirlove/ExpenseTracker">
-    <img src="https://github.com/mkdirlove/ExpenseTracker/blob/main/logo.png" alt="ExpenseTracker"></a>
+    <img src="https://cdn-icons-png.flaticon.com/128/17695/17695092.png" alt="ExpenseTracker"></a>
   <br>
   A simple expense tracker written in Python using Flask Framework.
   <br>
