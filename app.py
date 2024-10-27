@@ -143,7 +143,7 @@ def register():
 
         try:
             with sqlite3.connect('users.db') as conn:
-                conn.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))
+                conn.execute('INSERT INTO users (username, password, is_admin) VALUES (?, ?, 0)', (username, hashed_password))
                 conn.commit()
                 flash('Registration successful! You can now log in.', 'success')
                 return redirect(url_for('login'))
@@ -435,4 +435,4 @@ def export_expenses():
     }))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5001)
