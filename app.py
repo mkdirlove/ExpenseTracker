@@ -87,7 +87,6 @@ def get_user_by_id(user_id):
     user = cursor.fetchone()
     return user
 @app.route('/')
-@login_required
 def index():
     return render_template('index.html')  # Render index.html for logged-in users
 
@@ -98,7 +97,7 @@ def dashboard():
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM expenses WHERE user_id=? ORDER BY date DESC', (current_user.id,))
         expenses = cursor.fetchall()
-    return render_template('index.html', expenses=expenses)
+    return render_template('dashboard.html', expenses=expenses)
 
 def get_expenses_from_db():
     """Fetches all expenses for the logged-in user."""
