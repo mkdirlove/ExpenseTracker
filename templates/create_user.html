@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Create User</h1>
+            <form action="{{ url_for('create_user') }}" method="POST">
+                <div class="field">
+                    <label class="label" for="username">Username:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="username" name="username" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="password">Password:</label>
+                    <div class="control">
+                        <input class="input" type="password" id="password" name="password" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="is_admin">Admin:</label>
+                    <div class="control">
+                        <input type="checkbox" id="is_admin" name="is_admin">
+                        <label for="is_admin">Grant admin privileges</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Create User</button>
+                    </div>
+                </div>
+            </form>
+            <a class="button is-link" href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+        </div>
+    </section>
+</body>
+</html>

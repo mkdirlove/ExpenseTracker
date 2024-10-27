@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Admin Dashboard</h1>
+            <h2 class="subtitle">Manage Users</h2>
+
+            <div class="field is-grouped">
+                <div class="control">
+                    <a class="button is-primary" href="{{ url_for('create_user') }}">Create User</a>
+                </div>
+                <div class="control">
+                    <form action="{{ url_for('logout_admin') }}" method="POST">
+                        <button type="submit" class="button is-light">Logout</button>
+                    </form>
+                </div>
+            </div>
+
+            <table class="table is-striped is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Is Admin</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user[1] }}</td>
+                        <td>{{ 'Yes' if user[2] else 'No' }}</td>
+                        <td>
+                            <div class="buttons">
+                                <form action="{{ url_for('delete_user', user_id=user[0]) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="button is-danger is-small">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Edit User</h1>
+            <form action="{{ url_for('edit_user', user_id=user[0]) }}" method="POST">
+                <div class="field">
+                    <label class="label" for="username">Username:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="username" name="username" value="{{ user[1] }}" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="password">Password:</label>
+                    <div class="control">
+                        <input class="input" type="password" id="password" name="password">
+                        <p class="help">Leave blank to keep the current password.</p>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Admin:</label>
+                    <div class="control">
+                        <label class="checkbox">
+                            <input type="checkbox" name="is_admin" {% if user[2] %} checked {% endif %}>
+                            Is Admin
+                        </label>
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Update User</button>
+                    </div>
+                </div>
+            </form>
+            <a class="button" href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+        </div>
+    </section>
+</body>
+</html>

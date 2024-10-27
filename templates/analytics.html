@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="box has-background-dark is-flex is-flex-direction-column is-justify-content-space-between" style="height: 150px;">
+    <div>
+        <h2 class="title is-5">Analytics</h2>
+        <p>Total Expenses: <strong>₱{{ total }}</strong></p>
+    </div>
+    <div class="has-text-right" style="margin-top: auto;">
+        <a href="{{ url_for('export_expenses') }}" class="button is-info is-warning is-small">Export as CSV</a>
+    </div>
+</div>
+
+
+<div class="columns is-multiline">
+    {% for title, tableId, data in [
+        ('Category-wise Expenses', 'categoryExpensesTable', categories),
+        ('Daily Expenses', 'dailyExpensesTable', daily_expenses),
+        ('Monthly Expenses', 'monthlyExpensesTable', monthly_expenses),
+        ('Yearly Expenses', 'yearlyExpensesTable', yearly_expenses)
+    ] %}
+    <div class="column is-6">
+        <div class="card has-background-dark"> <!-- Add this class for grey background -->
+            <header class="card-header">
+                <p class="card-header-title has-text-centered">{{ title }}</p>
+            </header>
+            <div class="card-content">
+                <div class="table-container">
+                    <table id="{{ tableId }}" class="table is-fullwidth is-hoverable is-bordered is-narrow">
+                        <thead>
+                            <tr>
+                                <th class="is-link">{{ 'Category' if 'Category' in title else 'Date' if 'Daily' in title else 'Month' if 'Monthly' in title else 'Year' }}</th>
+                                <th class="is-link">Total Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data %}
+                            <tr>
+                                <td>{{ row[0] }}</td>
+                                <td>₱{{ row[1] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Include DataTables CSS and JS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+<style>
+    .analytics-container {
+        margin-bottom: 20px;
+    }
+
+    .total-expenses {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .table-container {
+        max-height: 250px; /* Set the maximum height for scrolling */
+        overflow-y: auto;  /* Enable vertical scrolling */
+        margin-top: 5px; /* Add some spacing */
+    }
+
+    .card {
+        border-radius: 8px; /* Rounded corners */
+        overflow: hidden; /* Prevents overflow */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    }
+
+    table.dataTable {
+        margin: 0; /* Remove margin for a better layout */
+    }
+</style>
+
+<script>
+    $(document).ready(function() {
+        // Initialize DataTables with vertical scroll for each table without search functionality
+        ['#categoryExpensesTable', '#dailyExpensesTable', '#monthlyExpensesTable', '#yearlyExpensesTable'].forEach(function(tableId) {
+            $(tableId).DataTable({
+                scrollY: '200px', // Set vertical scroll height
+                scrollCollapse: true, // Allow the table to reduce height when less data is present
+                paging: false, // Disable pagination
+                searching: false, // Disable the search field
+                info: false // Disable the info display
+            });
+        });
+    });
+</script>
+{% endblock %}

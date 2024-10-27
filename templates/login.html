@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="columns is-centered is-vcentered" style="padding-top: 15%;">
+    <div class="column is-one-third">
+        <div class="box has-background-dark">
+            <center><img src="https://cdn-icons-png.flaticon.com/128/1000/1000946.png" width="150"></img></center>
+            <h2 class="title is-4 has-text-centered">Login</h2>
+            <br>
+            <form method="POST">
+                <div class="field">
+                    <div class="control">
+                        <input class="input" type="text" name="username" placeholder="Username" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <input class="input" type="password" name="password" placeholder="Password" required>
+                    </div>
+                </div>
+                <br>
+                <div class="control">
+                    <button type="submit" class="button is-primary">Login</button>
+                </div>
+                <br>
+                <span>Don't have an account? <a href="/register">Register here.</a></span>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

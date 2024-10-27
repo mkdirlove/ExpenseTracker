@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="columns is-centered is-vcentered" style="padding-top: 10%;">
+    <div class="column is-one-third">
+        <div class="box has-background-dark">
+            <h2 class="title is-4 has-text-centered">Edit Expense</h2>
+            <br>
+            <form method="POST">
+                <div class="field">
+                    <label class="label">Title</label>
+                    <div class="control">
+                        <input class="input" type="text" name="title" placeholder="Expense Title" value="{{ expense[1] }}" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Amount</label>
+                    <div class="control">
+                        <input class="input" type="number" step="0.01" name="amount" placeholder="Amount" value="{{ expense[2] }}" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Category</label>
+                    <div class="control">
+                        <input class="input" type="text" name="category" placeholder="Category" value="{{ expense[3] }}" required>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Date</label>
+                    <div class="control">
+                        <input class="input" type="date" name="date" value="{{ expense[4] }}"required>
+                    </div>
+                </div>
+                <br>
+                <div class="control">
+                    <button type="submit" class="button is-link is-fullwidth">Edit Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
