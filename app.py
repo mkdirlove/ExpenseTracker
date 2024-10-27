@@ -23,6 +23,10 @@ class User(UserMixin):
         self.password = password
         self.is_admin = is_admin
 
+def enable_foreign_keys(conn):
+    """Enable foreign key support in SQLite."""
+    conn.execute("PRAGMA foreign_keys = ON;")
+
 # Load user from user ID
 @login_manager.user_loader
 def load_user(user_id):
@@ -188,9 +192,22 @@ def analytics():
     monthly_expenses = get_monthly_expenses(user_id)
     yearly_expenses = get_yearly_expenses(user_id)
 
+    # Prepare data for the pie chart
+    daily_labels = [entry[0] for entry in daily_expenses]  # Get dates
+    daily_values = [entry[1] for entry in daily_expenses]  # Get corresponding amounts
+
+    monthly_labels = [entry[0] for entry in monthly_expenses]  # Get months
+    monthly_values = [entry[1] for entry in monthly_expenses]  # Get corresponding amounts
+
+    yearly_labels = [entry[0] for entry in yearly_expenses]  # Get years
+    yearly_values = [entry[1] for entry in yearly_expenses]  # Get corresponding amounts
+
     return render_template('analytics.html', total=total, categories=categories,
                            daily_expenses=daily_expenses, monthly_expenses=monthly_expenses,
-                           yearly_expenses=yearly_expenses)
+                           yearly_expenses=yearly_expenses,
+                           daily_labels=daily_labels, daily_values=daily_values,
+                           monthly_labels=monthly_labels, monthly_values=monthly_values,
+                           yearly_labels=yearly_labels, yearly_values=yearly_values)
 
 def get_total_expenses(user_id):
     with sqlite3.connect('expenses.db') as conn:
@@ -284,9 +301,30 @@ def admin_dashboard():
         flash('You do not have permission to access this page.', 'danger')
         return redirect(url_for('dashboard'))
 
-    with sqlite3.connect('users.db') as conn:
-        users = conn.execute('SELECT id, username, is_admin FROM users').fetchall()
-    return render_template('admin_dashboard.html', users=users)
+    # Connect to the users database
+    with sqlite3.connect('users.db') as user_conn:
+        users = user_conn.execute('SELECT id, username, is_admin FROM users').fetchall()
+
+    # Connect to the expenses database
+    with sqlite3.connect('expenses.db') as expense_conn:
+        total_expenses = expense_conn.execute('SELECT SUM(amount) FROM expenses').fetchone()[0] or 0
+        daily_expenses = expense_conn.execute(
+            "SELECT date, SUM(amount) FROM expenses GROUP BY date ORDER BY date DESC LIMIT 7").fetchall()
+
+        # Other analytics data
+        monthly_expenses = expense_conn.execute(
+            "SELECT strftime('%Y-%m', date) AS month, SUM(amount) FROM expenses GROUP BY month").fetchall()
+        yearly_expenses = expense_conn.execute(
+            "SELECT strftime('%Y', date) AS year, SUM(amount) FROM expenses GROUP BY year").fetchall()
+        categories = expense_conn.execute(
+            "SELECT category, SUM(amount) FROM expenses GROUP BY category").fetchall()
+
+    return render_template('admin_dashboard.html', users=users,
+                           total_expenses=total_expenses,
+                           daily_expenses=daily_expenses,
+                           monthly_expenses=monthly_expenses,
+                           yearly_expenses=yearly_expenses,
+                           categories=categories)
 
 @app.route('/admin/delete_user/<int:user_id>', methods=['POST'])
 @login_required
@@ -337,7 +375,7 @@ def edit_user(user_id):
         is_admin = request.form.get('is_admin') == 'on'
 
         # Logic to update the user in the database
-        update_user(user_id, username, password, is_admin)  # Implement this function to update user data
+        pass
 
         return redirect(url_for('admin_dashboard'))
 
@@ -397,4 +435,4 @@ def export_expenses():
     }))
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=5001)
+    app.run(debug=True)
